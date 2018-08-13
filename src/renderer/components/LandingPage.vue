@@ -58,7 +58,7 @@
 
     body {
         font-family: 'Source Sans Pro', sans-serif;
-        /* overflow-y: hidden; */
+        overflow-y: hidden;
     }
 
     .draggable {
@@ -67,13 +67,13 @@
         -webkit-app-region: drag;
         height: 22px;
         width: 100%;
-        position: absolute;
+        background-color: #333333;
     }
 
     .video {
         display: inline-block;
         float: left;
-        height: calc(100vh);
+        height: calc(100vh - 23px);
         width: 80%;
         background-color: none;
         text-align: center;
@@ -84,7 +84,7 @@
     }
 
     .video-item {
-        background-color: white;
+        background-color: black;
         width: 100%;
 
     }
@@ -102,11 +102,20 @@
         float: right;
         height: calc(100vh);
         width: 20%;
-        background-color: #DCDCDC;
+        background-color: #1C1C1C;
+        overflow-y: scroll;
+    }
+/* 36393A */
+    .playlist-list {
+        margin-top: 5px;
+        z-index: 10;
     }
 
-    .playlist-list {
-        margin-top: 25px;
-        z-index: 10;
+    .playlist-list-item {
+        color: lightgray;
+        font-weight: 200;
+        border-bottom: 1px solid gray;
+        padding: 15px;
+        background-color: #36393A
     }
 </style>
