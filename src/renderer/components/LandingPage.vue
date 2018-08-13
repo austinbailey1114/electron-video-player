@@ -4,7 +4,7 @@
 
         </div>
         <div class="video">
-            <video :src="'file:///' + videoFile.path" height="100%" class="video-item">
+            <video :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item" controls>
                 Unable to find video
             </video>
             <div class="menu-bar">
@@ -13,7 +13,10 @@
         </div>
         <div class="playlist">
             <div class="playlist-list">
-                <input type="file" @change="handleChange($event)">
+                <input type="file" @change="handleChange($event)" multiple>
+                <div v-for="(video, index) in videos" class="playlist-list-item" @click.prevent="updateVideoSelection(index)">
+                    {{ video.name }}
+                </div>
             </div>
         </div>
     </div>
@@ -24,9 +27,8 @@
         name: 'landing-page',
         data() {
             return {
-                videoFile: {
-                    path: 'abc'
-                }
+                videos: [],
+                currentVideoIndex: 0,
             }
         },
         methods: {
@@ -34,9 +36,14 @@
                 this.$electron.shell.openExternal(link)
             },
             handleChange(event) {
-                this.videoFile = event.target.files[0]
-                console.log(this.videoFile)
+                this.currentVideoIndex = 0
+                this.videos = event.target.files
+                console.log(this.videos)
             },
+            updateVideoSelection(index) {
+                this.currentVideoIndex = index
+                console.log(this.currentVideoIndex)
+            }
         }
     }
 </script>
@@ -61,7 +68,6 @@
         height: 22px;
         width: 100%;
         position: absolute;
-        background-color: pink;
     }
 
     .video {
@@ -69,7 +75,7 @@
         float: left;
         height: calc(100vh);
         width: 80%;
-        background-color: black;
+        background-color: none;
         text-align: center;
     }
 
@@ -78,14 +84,14 @@
     }
 
     .video-item {
-        background-color: orange;
+        background-color: white;
         width: 100%;
 
     }
 
     .menu-bar {
         height: 50px;
-        background-color: orange;
+        background-color: black;
         width: 100%;
         position: absolute;
         display: none;
@@ -96,7 +102,7 @@
         float: right;
         height: calc(100vh);
         width: 20%;
-        background-color: red;
+        background-color: #DCDCDC;
     }
 
     .playlist-list {
