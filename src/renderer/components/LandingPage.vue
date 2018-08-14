@@ -1,7 +1,7 @@
 <template>
     <div id="wrapper">
         <div class="draggable">
-
+            {{ (videos.length > 0 ? videos[currentVideoIndex].name : 'None Selected') }}
         </div>
         <div class="video">
             <video :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item" controls>
@@ -13,9 +13,16 @@
         </div>
         <div class="playlist">
             <div class="playlist-list">
-                <input type="file" @change="handleChange($event)" multiple>
-                <div v-for="(video, index) in videos" class="playlist-list-item" @click.prevent="updateVideoSelection(index)">
-                    {{ video.name }}
+                <input type="file" @change="handleChange($event)" multiple id="file-input">
+                <div class="label-container">
+                    <label for="file-input" class="file-input-label">
+                        Select Videos
+                    </label>
+                </div>
+                <div class="playlist-list-container">
+                    <div v-for="(video, index) in videos" class="playlist-list-item" @click.prevent="updateVideoSelection(index)">
+                        {{ video.name }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,6 +75,8 @@
         height: 22px;
         width: 100%;
         background-color: #333333;
+        text-align: center;
+        color: white;
     }
 
     .video {
@@ -105,9 +114,13 @@
         background-color: #1C1C1C;
         overflow-y: scroll;
     }
-/* 36393A */
+
+    .playlist-list-container {
+        margin-top: 20px;
+    }
+
     .playlist-list {
-        margin-top: 5px;
+        margin-top: 20px;
         z-index: 10;
     }
 
@@ -116,6 +129,29 @@
         font-weight: 200;
         border-bottom: 1px solid gray;
         padding: 15px;
-        background-color: #36393A
+        background-color: #36393A;
+        cursor: pointer;
+    }
+
+    .playlist-list-item:hover {
+        background-color: #DCDCDC;
+        color: black;
+    }
+
+    #file-input {
+        display: none;
+    }
+
+    .label-container {
+        width: 100%;
+        text-align: center;
+    }
+
+    .file-input-label {
+        padding: 10px;
+        color: white;
+        border: 1px solid gray;
+        border-radius: 4px;
+        cursor: pointer;
     }
 </style>
