@@ -4,11 +4,11 @@
             {{ (videos.length > 0 ? videos[currentVideoIndex].name : 'None Selected') }}
         </div>
         <div class="video">
-            <video id="video-element" :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item">
+            <video @click.prevent="handlePlayPause" id="video-element" :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item">
                 Unable to find video
             </video>
             <div class="menu-bar">
-                <button class="play menu-bar-item" @click="play">Play</button>
+                <button class="play menu-bar-item" @click="handlePlayPause">{{ playOrPause }}</button>
             </div>
         </div>
         <div class="playlist">
@@ -20,7 +20,7 @@
                     </label>
                 </div>
                 <div class="playlist-list-container">
-                    <div v-for="(video, index) in videos" class="playlist-list-item" @click.prevent="updateVideoSelection(index)">
+                    <div v-for="(video, index) in videos" :class="{ 'is-active' : currentVideoIndex == index }" class="playlist-list-item" @click.prevent="updateVideoSelection(index)">
                         {{ video.name }}
                     </div>
                 </div>
@@ -36,11 +36,13 @@
             return {
                 videos: [],
                 currentVideoIndex: 0,
-                videoDOMElement: 'hello',
+                videoDOMElement: null,
+                paused: true
             }
         },
         mounted() {
             this.videoDOMElement = document.getElementById('video-element')
+            this.videoDOMElement.onended = this.onEnded()
         },
         methods: {
             open (link) {
@@ -49,14 +51,27 @@
             handleChange(event) {
                 this.currentVideoIndex = 0
                 this.videos = event.target.files
-                console.log(this.videos)
             },
             updateVideoSelection(index) {
                 this.currentVideoIndex = index
-                console.log(this.currentVideoIndex)
+                this.paused = true
             },
-            play() {
-                this.videoDOMElement.play()
+            handlePlayPause() {
+                if (!this.paused) {
+                    this.videoDOMElement.pause()
+                    this.paused = true
+                } else {
+                    this.videoDOMElement.play()
+                    this.paused = false
+                }
+            },
+            onEnded() {
+                console.log('ended')
+            }
+        },
+        computed: {
+            playOrPause() {
+                return (this.paused ? 'Play' : 'Pause')
             }
         }
     }
@@ -154,7 +169,7 @@
     .playlist-list-item {
         color: lightgray;
         font-weight: 200;
-        border-bottom: 1px solid gray;
+        border-top: 1px solid gray;
         padding: 15px;
         background-color: #36393A;
         cursor: pointer;
@@ -180,5 +195,9 @@
         border: 1px solid gray;
         border-radius: 4px;
         cursor: pointer;
+    }
+
+    .is-active {
+        background-color: black;
     }
 </style>
