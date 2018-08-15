@@ -4,11 +4,11 @@
             {{ (videos.length > 0 ? videos[currentVideoIndex].name : 'None Selected') }}
         </div>
         <div class="video">
-            <video :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item" controls>
+            <video id="video-element" :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item">
                 Unable to find video
             </video>
             <div class="menu-bar">
-
+                <button class="play menu-bar-item" @click="play">Play</button>
             </div>
         </div>
         <div class="playlist">
@@ -36,7 +36,11 @@
             return {
                 videos: [],
                 currentVideoIndex: 0,
+                videoDOMElement: 'hello',
             }
+        },
+        mounted() {
+            this.videoDOMElement = document.getElementById('video-element')
         },
         methods: {
             open (link) {
@@ -50,6 +54,9 @@
             updateVideoSelection(index) {
                 this.currentVideoIndex = index
                 console.log(this.currentVideoIndex)
+            },
+            play() {
+                this.videoDOMElement.play()
             }
         }
     }
@@ -82,7 +89,7 @@
     .video {
         display: inline-block;
         float: left;
-        height: calc(100vh - 23px);
+        height: calc(100vh);
         width: 80%;
         background-color: none;
         text-align: center;
@@ -92,18 +99,38 @@
         display: block;
     }
 
+    .menu-bar:hover {
+        display: block;
+    }
+
     .video-item {
         background-color: black;
         width: 100%;
+        float: left;
 
     }
 
     .menu-bar {
         height: 50px;
-        background-color: black;
-        width: 100%;
+        background-color: none;
+        width: 80%;
         position: absolute;
         display: none;
+        bottom: 0;
+        transition: 0.2s ease all;
+    }
+
+    .menu-bar-item {
+        line-height: 50px;
+        border: none;
+        background-color: none;
+        background: none;
+        outline: none;
+    }
+
+    .play {
+        color: white;
+        cursor: pointer;
     }
 
     .playlist {
