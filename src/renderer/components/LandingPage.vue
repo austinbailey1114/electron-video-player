@@ -4,10 +4,24 @@
             {{ (videos.length > 0 ? videos[currentVideoIndex].name : 'None Selected') }}
         </div>
         <div class="video">
-            <video @click.prevent="handlePlayPause" id="video-element" :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)" height="100%" class="video-item">
+            <video
+                @click.prevent="handlePlayPause"
+                @timeupdate="timeUpdate"
+                @ended="onEnded"
+                id="video-element"
+                :src="(videos.length > 0 ? 'file:///' + videos[currentVideoIndex].path : null)"
+                height="100%"
+                class="video-item">
                 Unable to find video
             </video>
             <div class="menu-bar">
+                <div class="progress-container">
+                    <div class="progress-parent" @click.prevent="progressClicked">
+                        <div class="progress-child" id="progress-child">
+
+                        </div>
+                    </div>
+                </div>
                 <button class="play menu-bar-item" @click="handlePlayPause">{{ playOrPause }}</button>
             </div>
         </div>
@@ -16,7 +30,7 @@
                 <input type="file" @change="handleChange($event)" multiple id="file-input">
                 <div class="label-container">
                     <label for="file-input" class="file-input-label">
-                        Select Videos
+                        Select Files
                     </label>
                 </div>
                 <div class="playlist-list-container">
@@ -37,12 +51,13 @@
                 videos: [],
                 currentVideoIndex: 0,
                 videoDOMElement: null,
-                paused: true
+                progressChild: null,
+                paused: true,
             }
         },
         mounted() {
             this.videoDOMElement = document.getElementById('video-element')
-            this.videoDOMElement.onended = this.onEnded()
+            this.progressChild = document.getElementById('progress-child')
         },
         methods: {
             open (link) {
@@ -67,6 +82,12 @@
             },
             onEnded() {
                 console.log('ended')
+            },
+            timeUpdate() {
+                this.progressChild.style.width = this.videoDOMElement.currentTime / this.videoDOMElement.duration * 100 + '%'
+            },
+            progressClicked() {
+                
             }
         },
         computed: {
@@ -136,16 +157,19 @@
     }
 
     .menu-bar-item {
-        line-height: 50px;
+        line-height: 46px;
         border: none;
         background-color: none;
         background: none;
         outline: none;
+        display: inline-block;
     }
 
     .play {
         color: white;
         cursor: pointer;
+        float: left;
+        padding: 0px 10px;
     }
 
     .playlist {
@@ -199,5 +223,23 @@
 
     .is-active {
         background-color: black;
+    }
+
+    .progress-container {
+        width: 100%;
+        height: 4px;
+    }
+
+    .progress-parent {
+        background-color: gray;
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+    }
+
+    .progress-child {
+        background-color: red;
+        width: 0%;
+        height: 4px;
     }
 </style>
